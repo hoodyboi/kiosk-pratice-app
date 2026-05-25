@@ -6,6 +6,7 @@ import HomeScreen from './screens/HomeScreen'; // 브랜드 선택 화면
 import MenuScreen from './screens/MenuScreen'; // (구) 맥도날드 메뉴판
 import KFCWelcomeScreen from './screens/kfc/KFCWelcomeScreen'; // 오늘 만든 KFC 첫화면
 import KFCMenuScreen from './screens/kfc/KFCMenuScreen';
+import KFCCartScreen from './screens/kfc/KFCCartScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export default function App() {
         {/* 오늘 만든 KFC Welcome화면을 'KFCStart'라는 이름으로 등록 */}
         <Stack.Screen name="KFCStart" component={KFCWelcomeScreen} />
         <Stack.Screen name="KFCMenu" component={KFCMenuScreen} />
+        <Stack.Screen name="KFCCart" component={KFCCartScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
