@@ -7,6 +7,7 @@ import MenuScreen from './screens/MenuScreen'; // (구) 맥도날드 메뉴판
 import KFCWelcomeScreen from './screens/kfc/KFCWelcomeScreen'; // 오늘 만든 KFC 첫화면
 import KFCMenuScreen from './screens/kfc/KFCMenuScreen';
 import KFCCartScreen from './screens/kfc/KFCCartScreen';
+import KFCReceiptScreen from './screens/kfc/KFCReceiptScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default function App() {
         <Stack.Screen name="KFCStart" component={KFCWelcomeScreen} />
         <Stack.Screen name="KFCMenu" component={KFCMenuScreen} />
         <Stack.Screen name="KFCCart" component={KFCCartScreen} />
+        <Stack.Screen name="KFCReceipt" component={KFCReceiptScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
