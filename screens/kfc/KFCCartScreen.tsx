@@ -5,8 +5,8 @@ import { useCartStore } from '../../store/useCartStore';
 
 export default function KFCCartScreen() {
   const navigation = useNavigation<any>();
-  // 🔴 Store에서 removeMenu 함수도 같이 꺼내옵니다.
-  const { cartItems, totalPrice, removeMenu, clearCart } = useCartStore();
+  // 스토어에서 모든 액션 유틸리티 함수들을 땡겨옵니다.
+  const { cartItems, totalPrice, addMenu, removeMenu, clearCart } = useCartStore();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -14,7 +14,7 @@ export default function KFCCartScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={styles.backButtonText}>◀ 메뉴 추가</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>주문 확인</Text>
+        <Text style={styles.headerTitle}>장바구니</Text>
         <View style={{ width: 80 }} />
       </View>
 
@@ -26,22 +26,33 @@ export default function KFCCartScreen() {
         ) : (
           <FlatList
             data={cartItems}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
-            // 🔴 renderItem에 index도 같이 뽑아옵니다.
-            renderItem={({ item, index }) => (
+            keyExtractor={(item) => item.id} // 이제 중복 라인이 없으므로 item.id 만으로 유니크 보장 가능
+            renderItem={({ item }) => (
               <View style={styles.cartItemRow}>
                 <View style={styles.cartItemInfo}>
                   <Text style={styles.cartItemName}>{item.name}</Text>
-                  <Text style={styles.cartItemPrice}>{item.price.toLocaleString()}원</Text>
+                  {/* 단가 * 개수로 표기하지 않고, 개수별 총합 금액으로 노출 처리 */}
+                  <Text style={styles.cartItemPrice}>{(item.price * item.quantity).toLocaleString()}원</Text>
                 </View>
                 
-                {/* 🔴 삭제 [X] 버튼 추가 */}
-                <TouchableOpacity 
-                  style={styles.deleteButton} 
-                  onPress={() => removeMenu(item.id)}
-                >
-                  <Text style={styles.deleteButtonText}>✕</Text>
-                </TouchableOpacity>
+                {/* 🔴 실제 KFC 키오스크 스타일 수량 조절 컴포넌트 팩 */}
+                <View style={styles.quantityContainer}>
+                  <TouchableOpacity 
+                    style={styles.quantityButton} 
+                    onPress={() => removeMenu(item.id)}
+                  >
+                    <Text style={styles.quantityButtonText}>−</Text>
+                  </TouchableOpacity>
+                  
+                  <Text style={styles.quantityText}>{item.quantity}</Text>
+                  
+                  <TouchableOpacity 
+                    style={styles.quantityButton} 
+                    onPress={() => addMenu(item)}
+                  >
+                    <Text style={styles.quantityButtonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
@@ -54,11 +65,11 @@ export default function KFCCartScreen() {
           style={[styles.payButton, cartItems.length === 0 && styles.payButtonDisabled]}
           disabled={cartItems.length === 0}
           onPress={() => {
-            clearCart(); // 1. 장바구니 DB 제거
-            navigation.navigate('KFCReceipt'); // 2. 영수증 화면으로 Redirect 
+            clearCart(); 
+            navigation.navigate('KFCReceipt'); 
           }}
-          >
-            <Text style={styles.payButtonText}>결제하기</Text>
+        >
+          <Text style={styles.payButtonText}>결제하기 {totalPrice.toLocaleString()}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -81,13 +92,15 @@ const styles = StyleSheet.create({
   cartItemName: { fontSize: 18, fontWeight: 'bold', color: '#1F2937', marginBottom: 4 },
   cartItemPrice: { fontSize: 16, color: '#E11D48', fontWeight: 'bold' },
   
-  // 삭제 버튼 스타일
-  deleteButton: { padding: 10, backgroundColor: '#FEE2E2', borderRadius: 8 },
-  deleteButtonText: { color: '#E11D48', fontSize: 16, fontWeight: 'bold' },
+  // 수량 조절 버튼 박스 스타일링
+  quantityContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F3F4F6', borderRadius: 8, padding: 4 },
+  quantityButton: { width: 36, height: 36, backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center', borderRadius: 6, borderWidth: 1, borderColor: '#E5E7EB' },
+  quantityButtonText: { fontSize: 18, fontWeight: 'bold', color: '#4B5563' },
+  quantityText: { fontSize: 16, fontWeight: 'bold', color: '#111', paddingHorizontal: 15, textAlign: 'center' },
 
   footer: { backgroundColor: '#FFF', padding: 20, borderTopWidth: 1, borderColor: '#EEE' },
   totalPriceText: { fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 15 },
   payButton: { backgroundColor: '#E11D48', paddingVertical: 15, borderRadius: 10, alignItems: 'center' },
-  payButtonDisabled: { backgroundColor: '#D1D5DB' }, // 비활성화 시 회색 처리
+  payButtonDisabled: { backgroundColor: '#D1D5DB' },
   payButtonText: { color: '#FFF', fontSize: 20, fontWeight: 'bold' }
 });

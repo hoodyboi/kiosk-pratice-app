@@ -1,13 +1,14 @@
-// App.tsx
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from './screens/HomeScreen'; // 브랜드 선택 화면
-import MenuScreen from './screens/MenuScreen'; // (구) 맥도날드 메뉴판
-import KFCWelcomeScreen from './screens/kfc/KFCWelcomeScreen'; // 오늘 만든 KFC 첫화면
+
+// 기존 임포트 항목들 (KFCMenuScreen, KFCCartScreen 등)
 import KFCMenuScreen from './screens/kfc/KFCMenuScreen';
 import KFCCartScreen from './screens/kfc/KFCCartScreen';
 import KFCReceiptScreen from './screens/kfc/KFCReceiptScreen';
+
+// 🔴 1. 방금 만든 시작 화면 컴포넌트 임포트 추가
+import KFCStartScreen from './screens/kfc/KFCStartScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,19 +17,14 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         
-        {/* 1. 앱의 유일한 진입점 (브랜드 선택 허브) */}
-        <Stack.Screen name="BrandSelectorHub" component={HomeScreen} />
+        {/* 🔴 2. 최상단 첫 번째 스크린의 component를 KFCStartScreen으로 변경! */}
+        <Stack.Screen name="KFCStart" component={KFCStartScreen} />
         
-        {/* 2. 맥도날드 전용 Navigator (앞으로 스택으로 묶어야 함) */}
-        {/* 일단은 에러 안 나게 route 이름만 'McDonaldsStart'로 변경해서 연결 */}
-        <Stack.Screen name="McDonaldsStart" component={MenuScreen} />
-        
-        {/* 3. KFC 전용 Navigator (앞으로 스택으로 묶어야 함) */}
-        {/* 오늘 만든 KFC Welcome화면을 'KFCStart'라는 이름으로 등록 */}
-        <Stack.Screen name="KFCStart" component={KFCWelcomeScreen} />
+        {/* 기존에 세팅해 둔 하위 엔드포인트 주소록들 */}
         <Stack.Screen name="KFCMenu" component={KFCMenuScreen} />
         <Stack.Screen name="KFCCart" component={KFCCartScreen} />
         <Stack.Screen name="KFCReceipt" component={KFCReceiptScreen} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
