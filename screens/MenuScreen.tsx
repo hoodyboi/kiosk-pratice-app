@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
-import { useCartStore } from '../store/useCartStore';
+import { useMcdonaldCartStore } from '../store/useMcdonaldCartStore';
 import { useNavigation } from '@react-navigation/native'; // 1. 네비게이션 훅 추가
 
 const MENU_DATA = [
@@ -12,7 +12,7 @@ const MENU_DATA = [
 
 export default function MenuScreen() {
   const navigation = useNavigation(); // 2. 네비게이션 객체 생성
-  const { cartItems, totalPrice, addMenu, clearCart } = useCartStore();
+  const { cartItems, totalPrice, addMenu, clearCart } = useMcdonaldCartStore();
 
   // 1. 남은 시간 상태 (초기값 60초)
   const [timeLeft, setTimeLeft] = useState(60);

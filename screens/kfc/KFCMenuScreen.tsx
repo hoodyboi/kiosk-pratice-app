@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, FlatList, Image, Platform, StatusBar, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useCartStore } from '../../store/useCartStore';
+import { useKFCCartStore } from '../../store/useKFCCartStore';
 
 // KFC 실제 메뉴 더미 데이터 (카테고리별로 분류)
 const KFC_CATEGORIES = ['베스트 메뉴', '버거박스', '치킨', '사이드', '음료'];
@@ -25,7 +25,7 @@ const SIDE_OPTIONS = [
 export default function KFCMenuScreen() {
   const navigation = useNavigation<any>();
   const [activeCategory, setActiveCategory] = useState('베스트 메뉴');
-  const { cartItems, totalPrice, addMenu } = useCartStore();
+  const { cartItems, totalPrice, addMenu } = useKFCCartStore();
 
   // 모달 제어용 상태
   const [modalVisible, setModalVisible] = useState(false);

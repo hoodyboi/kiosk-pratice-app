@@ -6,6 +6,6 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "module": "esnext"
+    "module": "esnext",
   }
 }

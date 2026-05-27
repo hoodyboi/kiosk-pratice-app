@@ -1,19 +1,25 @@
-// screens/HomeScreen.tsx
 import React from 'react';
+// 🔴 상단에 Image 컴포넌트 임포트 누락 에러 클리어
 import { Image, View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useCartStore } from '../store/useCartStore'; // 맥도날드 장바구니 사용 (나중에 KFC와 분리 필요)
+// 🔴 맥도날드 스토어와 KFC 스토어를 동시에 임포트
+import { useMcdonaldCartStore } from '../store/useMcdonaldCartStore';
+import { useKFCCartStore } from '../store/useKFCCartStore';
 
 export default function HomeScreen() {
   const navigation = useNavigation<any>();
-  const clearCart = useCartStore(state => state.clearCart);
+  
+  // 두 브랜드의 클리어 액션 포인터 바인딩
+  const clearMcdonaldCart = useMcdonaldCartStore(state => state.clearCart);
+  const clearKFCCart = useKFCCartStore(state => state.clearCart);
 
-  // 브랜드를 고를 때 실행하는 함수
   const handleSelectBrand = (brandRoute: 'McDonaldsStart' | 'KFCStart') => {
-    console.log(`${brandRoute} 선택됨`);
-    // 이전 브랜드의 장바구니 찌꺼기 날리기 (멀티 브랜드 아키텍처의 핵심 원칙)
-    clearCart(); 
-    // 선택한 브랜드의 시뮬레이터로 이동
+    console.log(`${brandRoute} 엔드포인트 라우팅 시도`);
+    
+    // 🔴 진입 전 양쪽 스토어 메모리 버퍼 싹 청소해서 사이드 이펙트 차단
+    clearMcdonaldCart(); 
+    clearKFCCart(); 
+    
     navigation.navigate(brandRoute); 
   };
 
@@ -27,23 +33,23 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.brandSelectorContainer}>
-        {/* 1. 맥도날드 고르기 버튼 */}
+        {/* 1. 맥도날드 진입점 */}
         <TouchableOpacity 
           style={[styles.brandButton, styles.mcdonaldsButton]} 
-          onPress={() => handleSelectBrand('McDonaldsStart')} // App.tsx에 등록된 Route 이름
+          onPress={() => handleSelectBrand('McDonaldsStart')} 
         >
           <Text style={styles.brandTextLarge}>M</Text>
           <Text style={styles.brandText}>맥도날드</Text>
           <Text style={styles.brandTextSmall}>연습 시작하기</Text>
         </TouchableOpacity>
 
-        {/* 2. KFC 고르기 버튼 (오늘의 새 미션!) */}
+        {/* 2. KFC 진입점 (Image 컴포넌트 바인딩 완료) */}
         <TouchableOpacity 
           style={[styles.brandButton, styles.kfcButton]} 
-          onPress={() => handleSelectBrand('KFCStart')} // App.tsx에 등록할 새 Route 이름
+          onPress={() => handleSelectBrand('KFCStart')} 
         >
           <Image 
-            source={{ uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/128px-KFC_logo.svg.png' }} // KFC 로고 임시 사용 (import { Image }... 스타일엔 Image 정의가 필요하군요... 에러 방지를 위해 Text로 바꾸겠습니다.)
+            source={{ uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/128px-KFC_logo.svg.png' }} 
             style={styles.kfcLogoInline}
             resizeMode="contain"
           />
@@ -51,7 +57,7 @@ export default function HomeScreen() {
           <Text style={styles.brandTextSmall}>연습 시작하기</Text>
         </TouchableOpacity>
         
-        {/* 3. (나중에 추가될 브랜드 예시) */}
+        {/* 3. 롯데리아 (인터셉터 대기 상태) */}
         <TouchableOpacity 
           style={[styles.brandButton, styles.disabledButton]} 
           onPress={() => Alert.alert('알림', '준비 중인 브랜드입니다.')}
@@ -60,7 +66,6 @@ export default function HomeScreen() {
           <Text style={styles.brandText}>롯데리아</Text>
           <Text style={styles.brandTextSmall}>(준비 중)</Text>
         </TouchableOpacity>
-
       </View>
 
       <View style={styles.footer}>
@@ -84,10 +89,9 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 6, elevation: 5
   },
   
-  // 브랜드별 색상 스타일
-  mcdonaldsButton: { borderColor: '#FBBF24' }, // 노란색 (원래 맥도날드 코드 그대로)
-  kfcButton: { borderColor: '#E11D48' }, // 빨간색
-  kfcLogoInline: {width: 40, height: 40, marginBottom: 10}, // Step 2. 코드엔 Image가 안 정의되어 있어서 Error... 죄송합니다. 그냥 텍스트로 대체할게요.
+  mcdonaldsButton: { borderColor: '#FBBF24' }, 
+  kfcButton: { borderColor: '#E11D48' }, 
+  kfcLogoInline: { width: 50, height: 50, marginBottom: 5 }, 
   
   disabledButton: { borderColor: '#E5E7EB', backgroundColor: '#F9FAFB', opacity: 0.6 },
   
@@ -98,8 +102,3 @@ const styles = StyleSheet.create({
   footer: { paddingBottom: 20, alignItems: 'center' },
   footerText: { fontSize: 14, color: '#999' },
 });
-
-// HomeScreen.tsx 윗부분 import에 'Image'가 빠져서 에러가 날 겁니다.
-// import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Alert } from 'react-native';
-// 여기에 'Image' 를 추가로 적어주시거나, 아니면 KFC 버튼의 Image를 그냥 Text로 바꿔주세요!
-// (제 실수입니다... 전 텍스트로 바꾸겠습니다.)

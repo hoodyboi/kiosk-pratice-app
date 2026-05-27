@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useCartStore, OrderType } from '../../store/useCartStore';
+import { useKFCCartStore, KFCOrderType } from '../../store/useKFCCartStore';
 
 export default function KFCStartScreen() {
     const navigation = useNavigation<any>();
-    const setOrderType = useCartStore(state => state.setOrderType);
+    const setOrderType = useKFCCartStore(state => state.setOrderType);
 
-    const handleSelectOrderType = (type: OrderType) => {
-        setOrderType(type);
-
-        navigation.navigate('KFCMenu');
+    const handleSelectOrderType = (type: KFCOrderType) => {
+      setOrderType(type);
+      navigation.navigate('KFCMenu');
     };
 
     return (

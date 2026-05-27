@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, Platform, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useCartStore } from '../../store/useCartStore';
+import { useKFCCartStore } from '../../store/useKFCCartStore';
 
 export default function KFCCartScreen() {
   const navigation = useNavigation<any>();
   // 스토어에서 모든 액션 유틸리티 함수들을 땡겨옵니다.
-  const { cartItems, totalPrice, addMenu, removeMenu, clearCart } = useCartStore();
+  const { cartItems, totalPrice, addMenu, removeMenu, clearCart } = useKFCCartStore();
 
   return (
     <SafeAreaView style={styles.container}>
