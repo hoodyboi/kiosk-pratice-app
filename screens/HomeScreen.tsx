@@ -1,24 +1,24 @@
 import React from 'react';
-// 🔴 상단에 Image 컴포넌트 임포트 누락 에러 클리어
+
 import { Image, View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// 🔴 맥도날드 스토어와 KFC 스토어를 동시에 임포트
 import { useMcdonaldCartStore } from '../store/useMcdonaldCartStore';
 import { useKFCCartStore } from '../store/useKFCCartStore';
+import { useEdiyaCartStore } from '../store/useEdiyaCartStore';
 
 export default function HomeScreen() {
   const navigation = useNavigation<any>();
   
-  // 두 브랜드의 클리어 액션 포인터 바인딩
+  // 브랜드의 클리어 액션 포인터 바인딩
   const clearMcdonaldCart = useMcdonaldCartStore(state => state.clearCart);
   const clearKFCCart = useKFCCartStore(state => state.clearCart);
-
-  const handleSelectBrand = (brandRoute: 'McDonaldsStart' | 'KFCStart') => {
+  const clearEdiyaCart = useEdiyaCartStore(state => state.clearCart);
+  const handleSelectBrand = (brandRoute: 'McDonaldsStart' | 'KFCStart' | 'EdiyaStart') => {
     console.log(`${brandRoute} 엔드포인트 라우팅 시도`);
     
-    // 🔴 진입 전 양쪽 스토어 메모리 버퍼 싹 청소해서 사이드 이펙트 차단
     clearMcdonaldCart(); 
     clearKFCCart(); 
+    clearEdiyaCart();
     
     navigation.navigate(brandRoute); 
   };
@@ -67,6 +67,16 @@ export default function HomeScreen() {
           <Text style={styles.brandTextSmall}>(준비 중)</Text>
         </TouchableOpacity>
       </View>
+
+      {/* 이디야 진입점 */}
+      <TouchableOpacity 
+          style={[styles.brandButton, { borderColor: '#1D4ED8' }]} 
+          onPress={() => handleSelectBrand('EdiyaStart')} 
+        >
+          <Text style={styles.brandTextLarge}>☕</Text>
+          <Text style={styles.brandText}>이디야 커피</Text>
+          <Text style={styles.brandTextSmall}>연습 시작하기</Text>
+        </TouchableOpacity>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>© 2026 Kiosk Practice for Seniors</Text>
